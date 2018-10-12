@@ -117,31 +117,26 @@ function scrape(url) {
 		if (data.hits && data.hits.hits.length) {
 			data = data.hits.hits[0];
 		}
-		var creation = data._source.lifecycle.creation;
+		var creation = data._source.lifecycle.creation[0];
 		var publication = data._source.lifecycle.publication[0];
 		var media = data._source.media[0];
 		var item = new Zotero.Item("book");
 		
 		
-		if (creation) {
-			var author = creation[0].author;
-			//Z.debug(author);
-			if (author) {
-				item.creators.push(ZU.cleanAuthor(author[0].name[0].value, "author", true));
-			}
+		var author = creation.author;
+		//Z.debug(author);
+		if (author) {
+			item.creators.push(ZU.cleanAuthor(author[0].name[0].value, "author", true));
 		}
-		if (publication) {
-			if (publication.publisher) {
-				item.publisher = publication.publisher[0].name[0].value;
-			}
-			if (publication.place) {
-				item.place = publication.place[0].name[0].value;
-			}
-			if (publication.date) {
-				item.date = publication.date[0].value;
-			}
+		if (publication.publisher) {
+			item.publisher = publication.publisher[0].name[0].value;
 		}
-		
+		if (publication.place) {
+			item.place = publication.place[0].name[0].value;
+		}
+		if (publication.date) {
+			item.date = publication.date[0].value;
+		}
 		item.title= data._source.summary_title;
 		item.numPages = media.page_count;
 		if (data._source.edition) {
